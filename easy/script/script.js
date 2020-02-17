@@ -52,9 +52,7 @@ window.addEventListener('DOMContentLoaded', function () {
             }
 
         }
-
         updateClock();
-
     }
 
     countTimer('18 feb 2020');
