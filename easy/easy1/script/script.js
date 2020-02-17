@@ -55,5 +55,5 @@ window.addEventListener('DOMContentLoaded', function () {
         updateClock();
     }
 
-    countTimer('18 feb 2020');
+    countTimer('19 feb 2020');
 });
