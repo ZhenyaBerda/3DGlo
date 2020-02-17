@@ -1,0 +1,20 @@
+.square {
+    height: 100px;
+    width: 100px;
+    background-color: blueviolet;
+    position: relative;
+    left: 0;
+}
+
+.move, .reset, .stop {
+    margin-top: 150px;
+    height: 30px;
+    width: 100px;
+    background: #fff;
+    color: #000;
+    border: #000 solid 1px;
+}
+
+.stop {
+    display: none;
+}
