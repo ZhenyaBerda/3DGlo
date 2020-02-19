@@ -3,13 +3,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Timer
     function countTimer(deadline) {
-        let timerHours = document.querySelector('#timer-hours'),
+        const timerHours = document.querySelector('#timer-hours'),
             timerMinutes = document.querySelector('#timer-minutes'),
             timerSeconds = document.querySelector('#timer-seconds');
+        let clockId;
 
-        function getTimeRemaining() {
+        const getTimeRemaining = () => {
 
-            function addZero(number) {
+            const addZero = (number) => {
                 let strNumber = number.toString();
 
                 if (strNumber.length === 1) {
@@ -17,9 +18,9 @@ window.addEventListener('DOMContentLoaded', function () {
                 } else {
                     return strNumber;
                 }
-            }
+            };
 
-            let dateStop = new Date(deadline).getTime(),
+            const dateStop = new Date(deadline).getTime(),
                 dateNow = new Date().getTime(),
                 timeRemaining = (dateStop - dateNow) / 1000,
                 seconds = addZero(Math.floor(timeRemaining % 60)),
@@ -34,27 +35,25 @@ window.addEventListener('DOMContentLoaded', function () {
                 minutes,
                 seconds
             };
-        }
+        };
 
-        function updateClock() {
+        const updateClock = () => {
             let timer = getTimeRemaining();
 
             timerHours.textContent = timer.hours;
             timerMinutes.textContent = timer.minutes;
             timerSeconds.textContent = timer.seconds;
 
-            if (timer.timeRemaining > 0 && timer.day !== 0) {
-                //setTimeout(updateClock, 1000);
-                setInterval(updateClock, 1000);
-            } else {
+            if (timer.timeRemaining <= 0 && timer.day === 0) {
                 timerHours.textContent = '00';
                 timerMinutes.textContent = '00';
                 timerSeconds.textContent = '00';
+                clearInterval(clockId);
             }
 
-        }
-        updateClock();
+        };
+        clockId = setInterval(updateClock, 1000);
     }
 
-    countTimer('19 feb 2020');
+    countTimer('25 feb 2020');
 });

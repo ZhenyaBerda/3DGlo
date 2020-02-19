@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 } else {
                     return strNumber;
                 }
-            }
+            };
 
             const dateStop = new Date(deadline).getTime(),
                 dateNow = new Date().getTime(),
@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 minutes,
                 seconds
             };
-        }
+        };
 
         const updateClock = () => {
             const timer = getTimeRemaining();
@@ -51,7 +51,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 timerSeconds.textContent = '00';
             }
 
-        }
+        };
 
         clockId = setInterval(updateClock, 1000);
     }
