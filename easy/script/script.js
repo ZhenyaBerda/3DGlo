@@ -54,7 +54,7 @@ window.addEventListener('DOMContentLoaded', function () {
         };
 
         clockId = setInterval(updateClock, 1000);
-    }
+    };
 
     countTimer('24 feb 2020');
 
