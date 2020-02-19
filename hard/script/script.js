@@ -2,10 +2,11 @@ window.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
     // Timer
-    function countTimer(deadline) {
+    const countTimer = (deadline) => {
         const timerHours = document.querySelector('#timer-hours'),
             timerMinutes = document.querySelector('#timer-minutes'),
             timerSeconds = document.querySelector('#timer-seconds');
+
         let clockId;
 
         const getTimeRemaining = () => {
@@ -25,12 +26,11 @@ window.addEventListener('DOMContentLoaded', function () {
                 timeRemaining = (dateStop - dateNow) / 1000,
                 seconds = addZero(Math.floor(timeRemaining % 60)),
                 minutes = addZero(Math.floor((timeRemaining / 60) % 60)),
-                hours = addZero(Math.floor(timeRemaining / 60 / 60) % 24),
-                day = (Math.floor(timeRemaining / 60 / 60 / 24) + 1);
+                hours = addZero(Math.floor(timeRemaining / 60 / 60));
+            // day = Math.floor(timeRemaining / 60 / 60 / 24);
 
             return {
                 timeRemaining,
-                day,
                 hours,
                 minutes,
                 seconds
@@ -38,22 +38,117 @@ window.addEventListener('DOMContentLoaded', function () {
         };
 
         const updateClock = () => {
-            let timer = getTimeRemaining();
+            const timer = getTimeRemaining();
 
             timerHours.textContent = timer.hours;
             timerMinutes.textContent = timer.minutes;
             timerSeconds.textContent = timer.seconds;
 
-            if (timer.timeRemaining <= 0 && timer.day === 0) {
+            if (timer.timeRemaining <= 0) {
+                clearInterval(clockId);
                 timerHours.textContent = '00';
                 timerMinutes.textContent = '00';
                 timerSeconds.textContent = '00';
-                clearInterval(clockId);
             }
 
         };
-        clockId = setInterval(updateClock, 1000);
-    }
 
-    countTimer('25 feb 2020');
+        clockId = setInterval(updateClock, 1000);
+    };
+
+    countTimer('24 feb 2020');
+
+
+    // menu
+    const toggleMenu = () => {
+        const btnMenu = document.querySelector('.menu'),
+            menu = document.querySelector('menu'),
+            closeBtn = document.querySelector('.close-btn'),
+            menuItems = menu.querySelectorAll('ul>li');
+
+
+        const handlerMenu = () => {
+            menu.classList.toggle('active-menu');
+        };
+
+        btnMenu.addEventListener('click', handlerMenu);
+        closeBtn.addEventListener('click', handlerMenu);
+        menuItems.forEach((elem) =>
+            elem.addEventListener('click', (event) => {
+                event.preventDefault();
+                handlerMenu();
+                const href = elem.querySelector('a').getAttribute('href');
+
+                document.querySelector(`${href}`).scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+
+
+            })
+        );
+
+    };
+
+    toggleMenu();
+
+    // кнопка scroll
+    const scroll = () => {
+        const scrollBtn = document.querySelector('a');
+        scrollBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelector('#service-block').scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        });
+
+    };
+
+    scroll();
+
+    // popup
+    const togglePopup = () => {
+        const popup = document.querySelector('.popup'),
+            popupBtn = document.querySelectorAll('.popup-btn'),
+            popupClose = document.querySelector('.popup-close'),
+            popupContent = document.querySelector('.popup-content');
+
+        let moveId, count;
+
+        const movePopup = () => {
+            moveId = requestAnimationFrame(movePopup);
+
+            count += 5;
+
+            if (popupContent.style.top !== '10%') {
+
+                popupContent.style.top = `${count}%`;
+            } else {
+                cancelAnimationFrame(moveId);
+            }
+
+        };
+
+        popupBtn.forEach((elem) => {
+            elem.addEventListener('click', () => {
+                if (document.documentElement.clientWidth > 768) {
+                    popupContent.style.top = `-100%`;
+                    count = -100;
+                    popup.style.display = 'block';
+                    movePopup();
+                } else {
+                    popup.style.display = 'block';
+                }
+            });
+        });
+
+
+
+        popupClose.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+    };
+
+    togglePopup();
 });
