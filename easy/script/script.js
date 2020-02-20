@@ -73,11 +73,39 @@ window.addEventListener('DOMContentLoaded', function () {
 
         btnMenu.addEventListener('click', handlerMenu);
         closeBtn.addEventListener('click', handlerMenu);
-        menuItems.forEach((elem) => elem.addEventListener('click', handlerMenu));
+        menuItems.forEach((elem) =>
+            elem.addEventListener('click', (event) => {
+                event.preventDefault();
+                handlerMenu();
+                const href = elem.querySelector('a').getAttribute('href');
+
+                document.querySelector(`${href}`).scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+
+
+            })
+        );
 
     };
 
     toggleMenu();
+
+    // кнопка scroll
+    const scroll = () => {
+        const scrollBtn = document.querySelector('a');
+        scrollBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelector('#service-block').scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        });
+
+    };
+
+    scroll();
 
     // popup
     const togglePopup = () => {
