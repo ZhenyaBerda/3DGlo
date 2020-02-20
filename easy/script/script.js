@@ -62,32 +62,30 @@ window.addEventListener('DOMContentLoaded', function () {
     // menu
     const toggleMenu = () => {
         const btnMenu = document.querySelector('.menu'),
-            menu = document.querySelector('menu'),
-            closeBtn = document.querySelector('.close-btn'),
-            menuItems = menu.querySelectorAll('ul>li');
-
+            menu = document.querySelector('menu');
 
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
 
         btnMenu.addEventListener('click', handlerMenu);
-        closeBtn.addEventListener('click', handlerMenu);
-        menuItems.forEach((elem) =>
-            elem.addEventListener('click', (event) => {
-                event.preventDefault();
+
+        menu.addEventListener('click', (event) => {
+            event.preventDefault();
+            let target = event.target;
+
+            if (target.matches('a')) {
                 handlerMenu();
-                const href = elem.querySelector('a').getAttribute('href');
+                const href = target.getAttribute('href');
 
-                document.querySelector(`${href}`).scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                });
-
-
-            })
-        );
-
+                if (href !== '#close') {
+                    document.querySelector(`${href}`).scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+            }
+        });
     };
 
     toggleMenu();
@@ -121,7 +119,6 @@ window.addEventListener('DOMContentLoaded', function () {
             count += 5;
 
             if (popupContent.style.top !== '10%') {
-
                 popupContent.style.top = `${count}%`;
             } else {
                 cancelAnimationFrame(moveId);
