@@ -198,31 +198,33 @@ window.addEventListener('DOMContentLoaded', function () {
     tabs();
 
     // add dots in slider
-    const addDots = () => {
-        const dotsConteiner = document.querySelector('.portfolio-dots'),
-            slideLenght = document.querySelectorAll('.portfolio-item').length;
 
-        for (let i = 0; i < slideLenght; i++) {
-            const li = document.createElement('li');
-            li.classList.add('dot');
 
-            if (i === 0) {
-                li.classList.add('dot-active');
-            }
-            dotsConteiner.appendChild(li);
-        }
-    };
-
-    addDots();
 
     // slider
     const slider = () => {
         const slide = document.querySelectorAll('.portfolio-item'),
-            dot = document.querySelectorAll('.dot'),
             slider = document.querySelector('.portfolio-content');
 
         let currentSlide = 0,
             interval;
+
+        const addDots = () => {
+            const dotsConteiner = document.querySelector('.portfolio-dots');
+
+            for (let i = 0; i < slide.length; i++) {
+                const li = document.createElement('li');
+                li.classList.add('dot');
+
+                if (i === 0) {
+                    li.classList.add('dot-active');
+                }
+                dotsConteiner.appendChild(li);
+            }
+        };
+
+        addDots();
+        const dot = document.querySelectorAll('.dot');
 
         const prevSlide = (elem, index, strClass) => {
             elem[index].classList.remove(strClass);
