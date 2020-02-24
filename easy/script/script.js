@@ -310,4 +310,49 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     slider();
+
+    // смена картинок в "Наша команда"
+    const switchImg = () => {
+        const container = document.querySelector('.command');
+
+        const switcher = (target) => {
+            const src = target.src;
+            target.src = target.dataset.img;
+            target.dataset.img = src;
+        };
+
+        container.addEventListener('mouseover', (event) => {
+            const target = event.target;
+
+            if (target.matches('img')) {
+                switcher(target);
+            }
+
+        });
+
+        container.addEventListener('mouseout', (event) => {
+            const target = event.target;
+            if (target.matches('img')) {
+                switcher(target);
+            }
+        });
+
+    };
+
+    switchImg();
+
+    // calculator
+    const calculator = () => {
+        const calcBlock = document.querySelector('.calc-block');
+
+        calcBlock.addEventListener('input', (event) => {
+            const target = event.target;
+
+            if (target.matches('input')) {
+                target.value = target.value.replace(/[^\d,]/g, '');
+            }
+        });
+    };
+
+    calculator();
 });
