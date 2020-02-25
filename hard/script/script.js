@@ -56,7 +56,7 @@ window.addEventListener('DOMContentLoaded', function () {
         clockId = setInterval(updateClock, 1000);
     };
 
-    countTimer('24 feb 2020');
+    countTimer('12 mar 2020');
 
 
     // menu
@@ -196,9 +196,6 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     tabs();
-
-    // add dots in slider
-
 
 
     // slider
@@ -342,8 +339,13 @@ window.addEventListener('DOMContentLoaded', function () {
     switchImg();
 
     // calculator
-    const calculator = () => {
-        const calcBlock = document.querySelector('.calc-block');
+    const calculator = (price) => {
+        const calcBlock = document.querySelector('.calc-block'),
+            calcType = document.querySelector('.calc-type'),
+            calcSquare = document.querySelector('.calc-square'),
+            calcDay = document.querySelector('.calc-day'),
+            calcCount = document.querySelector('.calc-count'),
+            totalValue = document.getElementById('total');
 
         calcBlock.addEventListener('input', (event) => {
             const target = event.target;
@@ -352,7 +354,60 @@ window.addEventListener('DOMContentLoaded', function () {
                 target.value = target.value.replace(/[^\d,]/g, '');
             }
         });
-    };
 
-    calculator();
+
+
+        const countSum = (price = 100) => {
+            let total = 0,
+                countValue = 1,
+                dayValue = 1,
+                animationId, count;
+            const typeValue = calcType.options[calcType.selectedIndex].value,
+                squareValue = +calcSquare.value;
+
+            if (+calcCount.value > 1) {
+                countValue += (calcCount.value - 1) / 10;
+            }
+
+            if (calcDay.value && calcDay.value < 5) {
+                dayValue *= 2;
+            } else if (calcDay.value && calcDay.value < 10) {
+                dayValue *= 1.5;
+            }
+
+            if (typeValue && squareValue) {
+                total = price * typeValue * squareValue * countValue * dayValue;
+
+
+                count = totalValue.textContent;
+
+                animationId = setInterval(() => {
+                    if (count < total) {
+                        count++;
+                        totalValue.textContent = `${count}`;
+                    } else if (count > total) {
+                        count--;
+                        totalValue.textContent = `${count}`;
+                    } else {
+                        clearInterval(animationId);
+                    }
+                }, 1);
+            }
+
+            // totalValue.textContent = total;
+        };
+
+
+
+        calcBlock.addEventListener('change', (event) => {
+            const target = event.target;
+
+            if (target.matches('.calc-type') || target.matches('.calc-square') ||
+                target.matches('.calc-day') || target.matches('.calc-count')) {
+                countSum();
+            }
+
+        });
+    };
+    calculator(100);
 });
