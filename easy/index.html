@@ -416,6 +416,59 @@
 	</div>
 
 	<script src="script/script.js"></script>
+	<script src="plugins/validator/validator.js"></script>
+	<script>
+		const validForm1 = new Validator({
+			selector: '#form1',
+			pattern: {
+				name: /^[а-яёА-ЯЁ]+$/
+			},
+			method: {
+				'form1-name': [
+					['notEmpty'],
+					['pattern', 'name']
+				],
+				'form1-email': [
+					['notEmpty'],
+					['pattern', 'email']
+				],
+				'form1-phone': [
+					['notEmpty'],
+					['pattern', 'phone']
+				]
+			}
+		});
+
+		const validForm2 = new Validator({
+			selector: '#form2',
+			pattern: {
+				name: /^[а-яёА-ЯЁ]+$/,
+				text: /^[а-яёА-ЯЁ,!.? ]+$/
+			},
+			method: {
+				'form2-name': [
+					['notEmpty'],
+					['pattern', 'text']
+				],
+				'form2-phone': [
+					['notEmpty'],
+					['pattern', 'phone']
+				],
+				'form2-email': [
+					['notEmpty'],
+					['pattern', 'email']
+				],
+				'form2-message': [
+					['notEmpty'],
+					['pattern', 'text']
+				]
+			}
+		});
+
+		validForm1.init();
+		validForm2.init();
+	</script>
+	</script>
 </body>
 
 </html>
