@@ -426,15 +426,37 @@ window.addEventListener('DOMContentLoaded', function () {
             request.send(JSON.stringify(body));
         };
 
-        const forms = document.querySelectorAll('form');
 
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = `font-size: 2rem;
         color: #fff`;
 
-        forms.forEach(form => {
-            form.addEventListener('submit', (event) => {
+        // запрет ввода неккоректных данных 
+        document.body.addEventListener('input', (event) => {
+            const target = event.target;
+
+            if (target.closest('input')) {
+                if (target.getAttribute('name') === 'user_name' || target.matches('.mess')) {
+                    target.value = target.value.replace(/[^а-яё ]/ig, '');
+                }
+
+                if (target.getAttribute('type') === 'email') {
+                    target.value = target.value.replace(/[^a-z@\.]/ig, '');
+                }
+
+                if (target.getAttribute('type') === 'tel') {
+                    target.value = target.value.replace(/[^+0-9]/ig, '');
+                }
+            }
+        });
+
+        // отправка формы
+        document.body.addEventListener('submit', (event) => {
+            const target = event.target;
+            if (target.closest('form')) {
                 event.preventDefault();
+                const form = target.closest('form');
+
                 form.appendChild(statusMessage);
                 statusMessage.textContent = loadMessage;
 
@@ -454,11 +476,9 @@ window.addEventListener('DOMContentLoaded', function () {
                 });
 
                 form.reset();
-            });
 
+            }
         });
-
-
 
 
     };
