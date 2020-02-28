@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function () {
         };
 
         body.addEventListener('click', (event) => {
-            event.preventDefault();
+
             let target = event.target;
 
             if (target.closest('.menu')) {
@@ -78,6 +78,7 @@ window.addEventListener('DOMContentLoaded', function () {
             }
 
             if (target.closest('menu') && target.matches('a')) {
+                event.preventDefault();
                 handlerMenu();
                 const href = target.getAttribute('href');
 
@@ -196,6 +197,9 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     tabs();
+
+    // add dots in slider
+
 
 
     // slider
@@ -356,12 +360,10 @@ window.addEventListener('DOMContentLoaded', function () {
         });
 
 
-
         const countSum = (price = 100) => {
             let total = 0,
                 countValue = 1,
-                dayValue = 1,
-                animationId, count;
+                dayValue = 1;
             const typeValue = calcType.options[calcType.selectedIndex].value,
                 squareValue = +calcSquare.value;
 
@@ -377,27 +379,10 @@ window.addEventListener('DOMContentLoaded', function () {
 
             if (typeValue && squareValue) {
                 total = price * typeValue * squareValue * countValue * dayValue;
-
-
-                count = totalValue.textContent;
-
-                animationId = setInterval(() => {
-                    if (count < total) {
-                        count++;
-                        totalValue.textContent = `${count}`;
-                    } else if (count > total) {
-                        count--;
-                        totalValue.textContent = `${count}`;
-                    } else {
-                        clearInterval(animationId);
-                    }
-                }, 1);
             }
 
-            // totalValue.textContent = total;
+            totalValue.textContent = total;
         };
-
-
 
         calcBlock.addEventListener('change', (event) => {
             const target = event.target;
@@ -410,4 +395,107 @@ window.addEventListener('DOMContentLoaded', function () {
         });
     };
     calculator(100);
+
+    //send-ajax-form
+
+    const sendForm = () => {
+        const errorMessage = 'Что-то пошло не так...',
+            loadMessage = 'Загрузка   ',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+        let animateId, count;
+
+        const statusMessage = document.createElement('div');
+
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+
+                if (request.readyState !== 4) {
+                    return;
+                }
+                clearInterval(animateId);
+                if (request.status === 200) {
+
+                    outputData();
+                } else {
+                    errorData(request.status);
+                }
+            });
+
+
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+
+
+            request.send(JSON.stringify(body));
+        };
+
+        // запрет ввода неккоректных данных 
+        document.body.addEventListener('input', (event) => {
+            const target = event.target;
+
+            if (target.closest('input')) {
+                if (target.getAttribute('name') === 'user_name' || target.matches('.mess')) {
+                    target.value = target.value.replace(/[^а-яё ]/ig, '');
+                }
+
+                if (target.getAttribute('type') === 'email') {
+                    target.value = target.value.replace(/[^a-z@\.]/ig, '');
+                }
+
+                if (target.getAttribute('type') === 'tel') {
+                    target.value = target.value.replace(/[^+0-9]/ig, '');
+                }
+            }
+        });
+
+        // отправка формы
+        document.body.addEventListener('submit', (event) => {
+            statusMessage.textContent = '';
+            const target = event.target;
+            if (target.closest('form')) {
+                event.preventDefault();
+                const form = target.closest('form');
+
+                form.appendChild(statusMessage);
+
+                // анимация
+                count = 0;
+                statusMessage.style.cssText = `font-size: 6rem; color: #fff`;
+                animateId = setInterval(() => {
+                    count = ++count % 3;
+                    statusMessage.textContent = `.${Array(count+1).join('.')}`;
+                }, 500);
+
+
+                const formData = new FormData(form);
+
+                let body = {};
+
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+
+                postData(body, () => {
+                    statusMessage.textContent = '';
+                    const img = document.createElement('img');
+                    img.setAttribute('src', './images/done.png');
+                    img.style.cssText = 'height: 6rem;';
+                    statusMessage.appendChild(img);
+                }, (error) => {
+                    console.error(error);
+                    statusMessage.textContent = errorMessage;
+                });
+
+                form.reset();
+
+            }
+        });
+
+
+    };
+
+    sendForm();
 });
