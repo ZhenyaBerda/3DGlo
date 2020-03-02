@@ -407,33 +407,15 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const postData = (body) => {
 
-            return new Promise((resolve, reject) => {
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-
-                    if (request.readyState !== 4) {
-                        return;
-                    }
-                    clearInterval(animateId);
-                    if (request.status === 200) {
-
-                        resolve();
-                    } else {
-                        reject(request.statusText);
-                    }
-                });
-
-
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-
-
-                request.send(JSON.stringify(body));
-
+            return fetch('./server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
         };
 
-        // запрет ввода неккоректных данных 
         document.body.addEventListener('input', (event) => {
             const target = event.target;
 
@@ -453,6 +435,7 @@ window.addEventListener('DOMContentLoaded', function () {
         });
 
         const successData = () => {
+            clearInterval(animateId);
             statusMessage.textContent = '';
             const img = document.createElement('img');
             img.setAttribute('src', './images/done.png');
@@ -461,6 +444,7 @@ window.addEventListener('DOMContentLoaded', function () {
         };
 
         const errorData = () => {
+            clearInterval(animateId);
             statusMessage.style.cssText = `font-size: 2rem; color: #fff`;
             statusMessage.textContent = errorMessage;
         };
@@ -493,15 +477,17 @@ window.addEventListener('DOMContentLoaded', function () {
                 });
 
                 postData(body)
-                    .then(successData)
+                    .then((response) => {
+                        if (response.status !== 200) {
+                            throw new Error('status network error');
+                        }
+                        successData();
+                    })
                     .catch(errorData);
 
                 form.reset();
-
             }
         });
-
-
     };
 
     sendForm();
