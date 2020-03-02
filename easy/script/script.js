@@ -408,7 +408,6 @@ window.addEventListener('DOMContentLoaded', function () {
         const postData = (body) => {
 
             return new Promise((resolve, reject) => {
-
                 const request = new XMLHttpRequest();
                 request.addEventListener('readystatechange', () => {
 
@@ -416,7 +415,7 @@ window.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
                     clearInterval(animateId);
-                    if (request.status === 20) {
+                    if (request.status === 200) {
 
                         resolve();
                     } else {
