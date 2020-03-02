@@ -399,37 +399,40 @@ window.addEventListener('DOMContentLoaded', function () {
     //send-ajax-form
 
     const sendForm = () => {
-        const errorMessage = 'Что-то пошло не так...',
-            loadMessage = 'Загрузка...',
-            successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
-
-        const postData = (body, outputData, errorData) => {
-            const request = new XMLHttpRequest();
-            request.addEventListener('readystatechange', () => {
-
-                if (request.readyState !== 4) {
-                    return;
-                }
-
-                if (request.status === 200) {
-                    outputData();
-                } else {
-                    errorData(request.status);
-                }
-            });
-
-
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-
-
-            request.send(JSON.stringify(body));
-        };
-
+        const errorMessage = 'Что-то пошло не так...';
+        let animateId, count;
 
         const statusMessage = document.createElement('div');
-        statusMessage.style.cssText = `font-size: 2rem;
-        color: #fff`;
+
+
+        const postData = (body) => {
+
+            return new Promise((resolve, reject) => {
+
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+                    clearInterval(animateId);
+                    if (request.status === 20) {
+
+                        resolve();
+                    } else {
+                        reject(request.statusText);
+                    }
+                });
+
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+
+
+                request.send(JSON.stringify(body));
+
+            });
+        };
 
         // запрет ввода неккоректных данных 
         document.body.addEventListener('input', (event) => {
@@ -450,15 +453,37 @@ window.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        const successData = () => {
+            statusMessage.textContent = '';
+            const img = document.createElement('img');
+            img.setAttribute('src', './images/done.png');
+            img.style.cssText = 'height: 6rem;';
+            statusMessage.appendChild(img);
+        };
+
+        const errorData = () => {
+            statusMessage.style.cssText = `font-size: 2rem; color: #fff`;
+            statusMessage.textContent = errorMessage;
+        };
+
         // отправка формы
         document.body.addEventListener('submit', (event) => {
+            statusMessage.textContent = '';
             const target = event.target;
             if (target.closest('form')) {
                 event.preventDefault();
                 const form = target.closest('form');
 
                 form.appendChild(statusMessage);
-                statusMessage.textContent = loadMessage;
+
+                // анимация
+                count = 0;
+                statusMessage.style.cssText = `font-size: 6rem; color: #fff`;
+                animateId = setInterval(() => {
+                    count = ++count % 3;
+                    statusMessage.textContent = `.${Array(count+1).join('.')}`;
+                }, 500);
+
 
                 const formData = new FormData(form);
 
@@ -468,12 +493,9 @@ window.addEventListener('DOMContentLoaded', function () {
                     body[key] = val;
                 });
 
-                postData(body, () => {
-                    statusMessage.textContent = successMessage;
-                }, (error) => {
-                    console.error(error);
-                    statusMessage.textContent = errorMessage;
-                });
+                postData(body)
+                    .then(successData)
+                    .catch(errorData);
 
                 form.reset();
 
