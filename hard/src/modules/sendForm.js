@@ -38,13 +38,18 @@ const sendForm = () => {
         }
     });
 
-    const successData = () => {
+    const successData = (form) => {
         clearInterval(animateId);
         statusMessage.textContent = '';
         const img = document.createElement('img');
         img.setAttribute('src', './images/done.png');
         img.style.cssText = 'height: 6rem;';
         statusMessage.appendChild(img);
+        form.reset();
+        setTimeout(() => {
+            statusMessage.textContent = '';
+        }, 3000);
+
     };
 
     const errorData = () => {
@@ -85,12 +90,12 @@ const sendForm = () => {
                     if (response.status !== 200) {
                         throw new Error('status network error');
                     }
-                    successData();
+                    successData(form);
+
                 })
                 .catch(errorData);
-
-            form.reset();
         }
+
     });
 };
 
